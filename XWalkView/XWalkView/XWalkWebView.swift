@@ -38,7 +38,7 @@ public extension WKWebView {
     internal func injectScript(code: String) -> WKUserScript {
         let script = WKUserScript(
             source: code,
-            injectionTime: WKUserScriptInjectionTime.AtDocumentEnd,
+            injectionTime: WKUserScriptInjectionTime.AtDocumentStart,
             forMainFrameOnly: false)
         configuration.userContentController.addUserScript(script)
         if self.URL != nil {

@@ -126,8 +126,8 @@ static NSString *getMIMETypeByExtension(NSString *extension);
         }
         case NSStreamEventHasBytesAvailable: {
             uint8_t buffer[LINE_SIZE_DEFAULT], *buf = buffer;
-            NSUInteger len = [_input read:buffer maxLength:sizeof(buffer)];
-            while (len--) {
+            NSInteger len = [_input read:buffer maxLength:sizeof(buffer)];
+            while (len-- > 0) {
                 char c = *(buf++);
                 if (c == '\r' && *buf == '\n') {
                     // End of line
