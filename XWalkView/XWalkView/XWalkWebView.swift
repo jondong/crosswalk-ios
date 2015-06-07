@@ -5,7 +5,7 @@
 import WebKit
 
 public class XWalkView : WKWebView {
-    private static let httpServer: HttpServer = HttpServer()
+    private static let httpServer: HTTPServer = HTTPServer()
     private var extensionThread: XWalkThread?
     private var channels: Dictionary<String, XWalkChannel> = [:]
 
@@ -70,9 +70,17 @@ public class XWalkView : WKWebView {
             return nil
         }
 
-        if self.dynamicType.httpServer.acceptSocket == -1 {
-            self.dynamicType.httpServer["/(.+)"] = HttpHandlers.directory(readAccessURL.path!)
-            self.dynamicType.httpServer.start()
+        if !self.dynamicType.httpServer.isRunning() {
+            self.dynamicType.httpServer.setType("_http._tcp")
+            var path = readAccessURL.path
+            self.dynamicType.httpServer.setDocumentRoot(path)
+            self.dynamicType.httpServer.setPort(8080)
+            var error: NSErrorPointer = nil
+            if (self.dynamicType.httpServer.start(error)) {
+                println("Server started at path:\(path)")
+            } else {
+                println("Failed to start server at path:\(path) with error:\(error)")
+            }
         }
 
         let target = URL.path!.substringFromIndex(advance(URL.path!.startIndex, count(readAccessURL.path!)))
